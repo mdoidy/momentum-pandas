@@ -8,7 +8,6 @@ import datetime
 end = datetime.date.today() #-datetime.timedelta(days=90)
 start = end - datetime.timedelta(days=250)
 
-
 listeISIN=pd.read_csv('liste.csv')
 cols=listeISIN.columns
 stockdata=pd.DataFrame(columns=['Code','Price','MA50','MA150','3M','6M','Ulcer'])
@@ -63,8 +62,9 @@ listeISIN['Note']=0.1*listeISIN['1M']+0.8*listeISIN['3M']+0.1*(1-listeISIN['Ulce
 #print(stockdata.head(3))
 #print(listeISIN.combine_first(stockdata)[cols].head(3))
 print("Writing to Excel")
-writer=pd.ExcelWriter('output.xlsx')
-listeISIN.to_excel(writer,'Sheet1')
+filename=datetime.date.today().strftime('output-%y%m%d.xlsx')
+writer=pd.ExcelWriter(filename)
+listeISIN.sort_values(by=['Note'],ascending=[False]).to_excel(writer,'Momentum')
 writer.save()
 
 #result=pd.merge(listeISIN,stockdata,on='Code',how='left')
